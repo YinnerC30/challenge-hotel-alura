@@ -20,7 +20,13 @@ public class Reservacion {
         this.total = total;
     }
 
-
+    public Reservacion(Integer id_reservation, Date date_of_entry, Date date_of_exit, float value_stay_price, String form_payment) {
+        this.id_reservation = id_reservation;
+        this.date_of_entry = date_of_entry;
+        this.date_of_exit = date_of_exit;
+        this.value_stay_price = value_stay_price;
+        this.form_payment = form_payment;
+    }
 
     public Integer getId_reservation() {
         return id_reservation;

@@ -57,16 +57,14 @@ public class ReservacionDAO {
 
         try {
             final PreparedStatement statement =
-                    con.prepareStatement(
-                            "SELECT " +
-
-                                    "date_of_entry " +
-                                    "date_of_exit, " +
-                                    "value_stay_price, " +
-                                    "form_payment, " +
-                                    "total" +
-                                    "FROM reservations" +
-                                    "WHERE is_active = 1");
+                    con.prepareStatement("select " +
+                            "id_reservation, " +
+                            "date_of_entry, " +
+                            "date_of_exit, " +
+                            "value_stay_price, " +
+                            "form_payment " +
+                            "from reservations " +
+                            "where  is_active = 1;");
 
             try (statement) {
                 statement.execute();
@@ -77,11 +75,11 @@ public class ReservacionDAO {
                     while (resultSet.next()) {
                         resultado.add(
                                 new Reservacion(
+                                        resultSet.getInt("id_reservation"),
                                         resultSet.getDate("date_of_entry"),
                                         resultSet.getDate("date_of_exit"),
                                         resultSet.getFloat("value_stay_price"),
-                                        resultSet.getString("form_payment"),
-                                        resultSet.getFloat("total")
+                                        resultSet.getString("form_payment")
                                 ));
                     }
                 }

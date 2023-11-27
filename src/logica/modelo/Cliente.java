@@ -27,7 +27,15 @@ public class Cliente {
         this.id_reservation=id_reservation;
     }
 
-
+    public Cliente(Integer id_client, String name, String last_name, Date date_of_birth, String nacionality, String telephone, Integer id_reservation) {
+        this.id_client = id_client;
+        this.name = name;
+        this.last_name = last_name;
+        this.date_of_birth = date_of_birth;
+        this.nacionality = nacionality;
+        this.telephone = telephone;
+        this.id_reservation = id_reservation;
+    }
 
     public Integer getId_client() {
         return id_client;

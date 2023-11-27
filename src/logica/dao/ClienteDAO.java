@@ -46,14 +46,9 @@ public class ClienteDAO {
         try {
             final PreparedStatement statement =
                     con.prepareStatement(
-                            "SELECT " +
-                                    "name, " +
-                                    "last_name, " +
-                                    "date_of_birth, " +
-                                    "nacionality, " +
-                                    "telephone " +
-                                    "FROM clients" +
-                                    "WHERE is_active = 1");
+                            "select cl.id_client, cl.name, cl.last_name, cl.date_of_birth, cl.nacionality, cl.telephone, re.id_reservation\n" +
+                                    "from clients cl\n" +
+                                    "inner join reservations re on cl.id_reservation = re.id_reservation where cl.is_active = 1 and re.is_active = 1;");
 
             try (statement) {
                 statement.execute();
@@ -64,6 +59,7 @@ public class ClienteDAO {
                     while (resultSet.next()) {
                         resultado.add(
                                 new Cliente(
+                                        resultSet.getInt("id_client"),
                                         resultSet.getString("name"),
                                         resultSet.getString("last_name"),
                                         resultSet.getDate("date_of_birth"),

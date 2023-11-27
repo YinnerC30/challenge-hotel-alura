@@ -1,5 +1,10 @@
 package views;
 
+import logica.controller.ClienteController;
+import logica.controller.ReservacionController;
+import logica.modelo.Cliente;
+import logica.modelo.Reservacion;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,6 +27,7 @@ import java.awt.Toolkit;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -104,6 +110,15 @@ public class Busqueda extends JFrame {
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table, null);
 		scroll_table.setVisible(true);
+
+		ReservacionController reservacionController = new ReservacionController();
+		List<Reservacion> listaReservaciones = reservacionController.listar();
+
+
+		for (Reservacion reserva : listaReservaciones) {
+			Object[] datos = new Object[]{reserva.getId_reservation(), reserva.getDate_of_entry(), reserva.getDate_of_exit(), reserva.getValue_stay_price(), reserva.getForm_payment()};
+			modelo.addRow(datos);
+		}
 		
 		
 		tbHuespedes = new JTable();
@@ -120,6 +135,15 @@ public class Busqueda extends JFrame {
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
 		scroll_tableHuespedes.setVisible(true);
+
+		ClienteController clienteController = new ClienteController();
+		List<Cliente> listaClientes = clienteController.listar();
+
+
+		for (Cliente cliente : listaClientes) {
+			Object[] datos = new Object[]{cliente.getId_client(), cliente.getName(), cliente.getLast_name(), cliente.getDate_of_birth(), cliente.getNacionality(), cliente.getTelephone(), cliente.getId_reservation()};
+			modeloHuesped.addRow(datos);
+		}
 		
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/Ha-100px.png")));

@@ -29,14 +29,14 @@ import java.awt.event.MouseMotionAdapter;
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
 
-	private JPanel contentPane;
-	private JTextField txtBuscar;
-	private JTable tbHuespedes;
-	private JTable tbReservas;
-	private DefaultTableModel modelo;
-	private DefaultTableModel modeloHuesped;
-	private JLabel labelAtras;
-	private JLabel labelExit;
+	private final JPanel contentPane;
+	private final JTextField txtBuscar;
+	private final JTable tbHuespedes;
+	private final JTable tbReservas;
+	private final DefaultTableModel modelo;
+	private final DefaultTableModel modeloHuesped;
+	private final JLabel labelAtras;
+	private final JLabel labelExit;
 	int xMouse, yMouse;
 
 	/**

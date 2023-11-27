@@ -24,10 +24,10 @@ import javax.swing.JSeparator;
 @SuppressWarnings("serial")
 public class MenuUsuario extends JFrame {
 
-	private JPanel contentPane;
+	private final JPanel contentPane;
 	int xMouse, yMouse;
-	private JLabel labelExit;
-	private JLabel labelRegistro;
+	private final JLabel labelExit;
+	private final JLabel labelRegistro;
 
 	/**
 	 * Launch the application.

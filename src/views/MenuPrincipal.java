@@ -19,8 +19,8 @@ import java.awt.event.MouseMotionAdapter;
 @SuppressWarnings("serial")
 public class MenuPrincipal extends JFrame {
 
-	private JPanel contentPane;
-	private JLabel labelExit;
+	private final JPanel contentPane;
+	private final JLabel labelExit;
 	int xMouse, yMouse;
 
 	/**
@@ -77,7 +77,7 @@ public class MenuPrincipal extends JFrame {
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JLabel lblCopyR = new JLabel("Desarrollado por Fulanita de Tal © 2023");
+		JLabel lblCopyR = new JLabel("Desarrollado por Yinner Chilito © 2023");
 		lblCopyR.setBounds(315, 11, 284, 19);
 		lblCopyR.setForeground(new Color(240, 248, 255));
 		lblCopyR.setFont(new Font("Roboto", Font.PLAIN, 16));

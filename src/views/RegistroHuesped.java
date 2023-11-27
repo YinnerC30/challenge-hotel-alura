@@ -1,43 +1,43 @@
 package views;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
-import java.awt.Color;
+import java.awt.*;
+
 import com.toedter.calendar.JDateChooser;
+import logica.controller.ClienteController;
+import logica.controller.ReservacionController;
+import logica.modelo.Cliente;
+
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import java.awt.Font;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.SystemColor;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Format;
-import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
+import java.util.Date;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
 
 @SuppressWarnings("serial")
 public class RegistroHuesped extends JFrame {
 
-	private JPanel contentPane;
-	private JTextField txtNombre;
-	private JTextField txtApellido;
-	private JTextField txtTelefono;
-	private JTextField txtNreserva;
-	private JDateChooser txtFechaN;
-	private JComboBox<Format> txtNacionalidad;
-	private JLabel labelExit;
-	private JLabel labelAtras;
+	private final JPanel contentPane;
+	private final JTextField txtNombre;
+	private final JTextField txtApellido;
+	private final JTextField txtTelefono;
+	private final JTextField txtNreserva;
+	private final JDateChooser txtFechaN;
+	private final JComboBox<Format> txtNacionalidad;
+	private final JLabel labelExit;
+	private final JLabel labelAtras;
 	int xMouse, yMouse;
+
+
 
 	/**
 	 * Launch the application.
@@ -46,7 +46,7 @@ public class RegistroHuesped extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RegistroHuesped frame = new RegistroHuesped();
+					RegistroHuesped frame = new RegistroHuesped(0);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,7 +58,7 @@ public class RegistroHuesped extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RegistroHuesped() {
+	public RegistroHuesped(Integer id_reservation) {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RegistroHuesped.class.getResource("/imagenes/lOGO-50PX.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,6 +96,7 @@ public class RegistroHuesped extends JFrame {
 		btnAtras.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				new ReservacionController().eliminar(id_reservation);
 				ReservasView reservas = new ReservasView();
 				reservas.setVisible(true);
 				dispose();				
@@ -205,6 +206,8 @@ public class RegistroHuesped extends JFrame {
 		contentPane.add(lblNumeroReserva);
 		
 		txtNreserva = new JTextField();
+		txtNreserva.setText(String.valueOf(id_reservation));
+		txtNreserva.setEditable(false);
 		txtNreserva.setFont(new Font("Roboto", Font.PLAIN, 16));
 		txtNreserva.setBounds(560, 495, 285, 33);
 		txtNreserva.setColumns(10);
@@ -247,14 +250,23 @@ public class RegistroHuesped extends JFrame {
 		separator_1_2_5.setForeground(new Color(12, 138, 199));
 		separator_1_2_5.setBackground(new Color(12, 138, 199));
 		contentPane.add(separator_1_2_5);
+
+
 		
 		JPanel btnguardar = new JPanel();
 		btnguardar.setBounds(723, 560, 122, 35);
 		btnguardar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				new ClienteController().guardar(obtenerDatosFormulario());
+				dispose();
+				MenuUsuario menuUsuario = new MenuUsuario();
+				menuUsuario.setVisible(true);
 			}
 		});
+
+
+
 		btnguardar.setLayout(null);
 		btnguardar.setBackground(new Color(12, 138, 199));
 		contentPane.add(btnguardar);
@@ -282,15 +294,20 @@ public class RegistroHuesped extends JFrame {
 		logo.setBounds(194, 39, 104, 107);
 		panel.add(logo);
 		logo.setIcon(new ImageIcon(RegistroHuesped.class.getResource("/imagenes/Ha-100px.png")));
-		
+
 		JPanel btnexit = new JPanel();
 		btnexit.setBounds(857, 0, 53, 36);
 		contentPane.add(btnexit);
+		btnexit.setBackground(Color.white);
+		header.add(btnexit);
+
+
 		btnexit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				MenuPrincipal principal = new MenuPrincipal();
-				principal.setVisible(true);
+				new ReservacionController().eliminar(id_reservation);
+				MenuUsuario menuUsuario = new MenuUsuario();
+				menuUsuario.setVisible(true);
 				dispose();
 			}
 			@Override
@@ -306,13 +323,15 @@ public class RegistroHuesped extends JFrame {
 		});
 		btnexit.setLayout(null);
 		btnexit.setBackground(Color.white);
-		
+
 		labelExit = new JLabel("X");
 		labelExit.setBounds(0, 0, 53, 36);
 		btnexit.add(labelExit);
 		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
 		labelExit.setForeground(SystemColor.black);
 		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
+
+
 	}
 	
 	
@@ -327,5 +346,21 @@ public class RegistroHuesped extends JFrame {
 	        int y = evt.getYOnScreen();
 	        this.setLocation(x - xMouse, y - yMouse);
 }
+
+	public Cliente obtenerDatosFormulario()  {
+
+		Date fechaNacimiento = txtFechaN.getDate();
+		java.sql.Date date_of_birth = new java.sql.Date(fechaNacimiento.getTime());
+
+		return new Cliente(
+				txtNombre.getText(),
+				txtApellido.getText(),
+				date_of_birth,
+				(String) txtNacionalidad.getSelectedItem(),
+				txtTelefono.getText(),
+				Integer.valueOf( txtNreserva.getText())
+		);
+
+	}
 											
 }

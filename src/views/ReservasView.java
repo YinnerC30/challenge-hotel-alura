@@ -237,49 +237,6 @@ public class ReservasView extends JFrame {
         lblSiguiente.setFont(new Font("Roboto", Font.PLAIN, 18));
         lblSiguiente.setBounds(0, 0, 122, 35);
 
-        /*JLabel lblGuardar = new JLabel("GUARDAR");
-        lblGuardar.setHorizontalAlignment(SwingConstants.CENTER);
-        lblGuardar.setForeground(Color.WHITE);
-        lblGuardar.setFont(new Font("Roboto", Font.PLAIN, 18));
-        lblGuardar.setBounds(0, 0, 122, 35);
-
-        JPanel btnGuardar = new JPanel();
-        btnGuardar.add(lblGuardar);
-        btnGuardar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-
-                System.out.println(ReservasView.txtValor.getText());
-                if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null &&
-                        !ReservasView.txtValor.getText().trim().isEmpty()) {
-
-                    try {
-                        Reservacion reservacion = obtenerDatosFormulario();
-                        dispose();
-                        ReservacionController reservacionController = new ReservacionController();
-                        Integer id_reservation = reservacionController.guardar(reservacion);
-                        RegistroHuesped registro = new RegistroHuesped(id_reservation);
-                        registro.setVisible(true);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Datos introducidos incorrectos, vuelve a intentarlo");
-                    }
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
-                }
-
-            }
-        });
-
-        btnGuardar.setLayout(null);
-        btnGuardar.setBackground(SystemColor.textHighlight);
-        btnGuardar.setBounds(38, 493, 122, 35);
-        panel.add(btnGuardar);
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-*/
-
 
         //Campos que guardaremos en la base de datos
         txtFechaEntrada = new JDateChooser();
@@ -292,7 +249,6 @@ public class ReservasView extends JFrame {
         txtFechaEntrada.setBorder(new LineBorder(SystemColor.window));
         txtFechaEntrada.setDateFormatString("yyyy-MM-dd");
         txtFechaEntrada.setFont(new Font("Roboto", Font.PLAIN, 18));
-        //txtFechaEntrada.setEnabled(false);
         panel.add(txtFechaEntrada);
 
         txtFechaSalida = new JDateChooser();
@@ -302,15 +258,11 @@ public class ReservasView extends JFrame {
         txtFechaSalida.getCalendarButton().setBounds(267, 1, 21, 31);
         txtFechaSalida.setBackground(Color.WHITE);
         txtFechaSalida.setFont(new Font("Roboto", Font.PLAIN, 18));
-        txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                //Activa el evento, después del usuario seleccionar las fechas se debe calcular el valor de la reserva
-            }
-        });
         txtFechaSalida.setDateFormatString("yyyy-MM-dd");
         txtFechaSalida.getCalendarButton().setBackground(SystemColor.textHighlight);
         txtFechaSalida.setBorder(new LineBorder(new Color(255, 255, 255), 0));
         panel.add(txtFechaSalida);
+
 
         txtValor = new JTextField();
         txtValor.setColumns(10);
@@ -350,6 +302,8 @@ public class ReservasView extends JFrame {
                         Integer id_reservation = reservacionController.guardar(reservacion);
                         RegistroHuesped registro = new RegistroHuesped(id_reservation);
                         registro.setVisible(true);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Valor introducido no es numerico");
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Datos introducidos incorrectos, vuelve a intentarlo");
                     }
@@ -365,6 +319,31 @@ public class ReservasView extends JFrame {
         btnsiguiente.setBounds(238, 493, 122, 35);
         panel.add(btnsiguiente);
         btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+
+        txtFechaEntrada.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                // Calcula la diferencia en días entre las dos fechas
+                Long diasDeDiferencia = obtenerDiasDeDiferencia();
+
+                if (diasDeDiferencia != null && diasDeDiferencia <= 0) {
+                    JOptionPane.showMessageDialog(null, "Rango de fechas incorrecto, la fecha de entrada debe ser inferior a la fecha de salida");
+                    txtFechaEntrada.setDate(null);
+                }
+            }
+        });
+
+        txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                Long diasDeDiferencia = obtenerDiasDeDiferencia();
+
+                if (diasDeDiferencia != null && diasDeDiferencia <= 0) {
+                    JOptionPane.showMessageDialog(null, "Rango de fechas incorrecto, la fecha de salida debe ser superior a la fecha de entrada");
+                    txtFechaSalida.setDate(null);
+                }
+            }
+        });
 
 
     }
@@ -564,7 +543,6 @@ public class ReservasView extends JFrame {
             public void mouseClicked(MouseEvent e) {
 
 
-                System.out.println(ReservasView.txtValor.getText());
                 if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null &&
                         !ReservasView.txtValor.getText().trim().isEmpty()) {
 
@@ -582,8 +560,10 @@ public class ReservasView extends JFrame {
                                 reservacion.getId_reservation());
                         dispose();
                         new Busqueda().setVisible(true);
+
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Valor introducido no es numerico");
                     } catch (Exception ex) {
-                        System.out.println(ex.getMessage());
                         JOptionPane.showMessageDialog(null, "Datos introducidos incorrectos, vuelve a intentarlo");
                     }
 
@@ -622,11 +602,7 @@ public class ReservasView extends JFrame {
         txtFechaSalida.getCalendarButton().setBounds(267, 1, 21, 31);
         txtFechaSalida.setBackground(Color.WHITE);
         txtFechaSalida.setFont(new Font("Roboto", Font.PLAIN, 18));
-        txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                //Activa el evento, después del usuario seleccionar las fechas se debe calcular el valor de la reserva
-            }
-        });
+
         txtFechaSalida.setDateFormatString("yyyy-MM-dd");
         txtFechaSalida.getCalendarButton().setBackground(SystemColor.textHighlight);
         txtFechaSalida.setBorder(new LineBorder(new Color(255, 255, 255), 0));
@@ -655,11 +631,36 @@ public class ReservasView extends JFrame {
         txtFormaPago.setModel(new DefaultComboBoxModel(new String[]{"Tarjeta de Crédito", "Tarjeta de Débito", "Dinero en efectivo"}));
         txtFormaPago.setSelectedItem(reservacion.getForm_payment());
         panel.add(txtFormaPago);
+
+
+        txtFechaEntrada.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                // Calcula la diferencia en días entre las dos fechas
+                Long diasDeDiferencia = obtenerDiasDeDiferencia();
+
+                if (diasDeDiferencia != null && diasDeDiferencia <= 0) {
+                    JOptionPane.showMessageDialog(null, "Rango de fechas incorrecto, la fecha de entrada debe ser inferior a la fecha de salida");
+                    txtFechaEntrada.setDate(null);
+                }
+            }
+        });
+
+        txtFechaSalida.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                Long diasDeDiferencia = obtenerDiasDeDiferencia();
+
+                if (diasDeDiferencia != null && diasDeDiferencia <= 0) {
+                    JOptionPane.showMessageDialog(null, "Rango de fechas incorrecto, la fecha de salida debe ser superior a la fecha de entrada");
+                    txtFechaSalida.setDate(null);
+                }
+            }
+        });
     }
 
     // Codigo para obtener información
 
-    public Reservacion obtenerDatosFormulario() throws ParseException {
+    public Reservacion obtenerDatosFormulario() throws ParseException, NumberFormatException {
         Date fechaEntrada = txtFechaEntrada.getDate();
         java.sql.Date date_of_entry = new java.sql.Date(fechaEntrada.getTime());
 
@@ -668,12 +669,8 @@ public class ReservasView extends JFrame {
         float value_stay_price = Float.parseFloat(txtValor.getText());
         String form_payment = (String) txtFormaPago.getSelectedItem();
 
-        // Convierte las fechas java.sql.Date a java.time.LocalDate
-        LocalDate localDate1 = date_of_entry.toLocalDate();
-        LocalDate localDate2 = date_of_exit.toLocalDate();
-
         // Calcula la diferencia en días entre las dos fechas
-        long diasDeDiferencia = ChronoUnit.DAYS.between(localDate1, localDate2);
+        Long diasDeDiferencia = obtenerDiasDeDiferencia();
 
         return new Reservacion(
                 date_of_entry,
@@ -682,7 +679,6 @@ public class ReservasView extends JFrame {
                 form_payment,
                 value_stay_price * diasDeDiferencia
         );
-
     }
 
     //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
@@ -696,4 +692,25 @@ public class ReservasView extends JFrame {
         int y = evt.getYOnScreen();
         this.setLocation(x - xMouse, y - yMouse);
     }
+
+    public Long obtenerDiasDeDiferencia() {
+        if (txtFechaEntrada.getDate() != null && txtFechaSalida.getDate() != null) {
+            Date fechaEntrada = txtFechaEntrada.getDate();
+            Date fechaSalida = txtFechaSalida.getDate();
+
+            java.sql.Date fecha1 = new java.sql.Date(fechaEntrada.getTime());
+            java.sql.Date fecha2 = new java.sql.Date(fechaSalida.getTime());
+
+            // Convierte las fechas java.sql.Date a java.time.LocalDate
+            LocalDate localDate1 = fecha1.toLocalDate();
+            LocalDate localDate2 = fecha2.toLocalDate();
+
+            // Calcula la diferencia en días entre las dos fechas
+            Long diasDeDiferencia = ChronoUnit.DAYS.between(localDate1, localDate2);
+            return diasDeDiferencia;
+        }
+        return null;
+    }
+
+
 }

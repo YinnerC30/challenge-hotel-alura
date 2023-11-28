@@ -28,6 +28,9 @@ public class ClienteController {
     public List<Cliente> listar() {
         return clienteDAO.listar();
     }
+    public List<Cliente> buscarRegistros(String indicioRegistro) {
+        return clienteDAO.buscarRegistros(indicioRegistro);
+    }
 
     public void guardar(Cliente cliente) {
         clienteDAO.guardar(cliente);

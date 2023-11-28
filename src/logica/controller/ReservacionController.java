@@ -23,7 +23,7 @@ public class ReservacionController {
         return reservacionDAO.listar();
     }
 
-    public int modificar(Integer id_client,
+    public int modificar(
                          Date date_of_entry,
                          Date date_of_exit,
                          float value_stay_price,
@@ -32,7 +32,6 @@ public class ReservacionController {
                          Integer id_reservation) {
 
         return reservacionDAO.modificar(
-                id_client,
                 date_of_entry,
                 date_of_exit,
                 value_stay_price,
@@ -46,4 +45,7 @@ public class ReservacionController {
     }
 
 
+    public List<Reservacion> buscarRegistros(String indicioRegistro) {
+        return reservacionDAO.buscarRegistros(indicioRegistro);
+    }
 }

@@ -101,8 +101,8 @@ public class ClienteDAO {
                             + " last_name = ?,"
                             + " date_of_birth = ?,"
                             + " nacionality = ?,"
-                            + " telephone = ?,"
-                            + " WHERE id_client = ?");
+                            + " telephone = ?"
+                            + " WHERE id_client = ?;");
 
             try (statement) {
                 statement.setString(1, name);
@@ -120,5 +120,54 @@ public class ClienteDAO {
         }
     }
 
+    public List<Cliente> buscarRegistros(String indicioRegistro) {
+        List<Cliente> resultado = new ArrayList<>();
+        try {
+            final PreparedStatement statement =
+                    con.prepareStatement("select cl.id_client, cl.name, cl.last_name, cl.date_of_birth, cl.nacionality, cl.telephone, re.id_reservation\n" +
+                            "from clients cl\n" +
+                            "inner join reservations re on cl.id_reservation = re.id_reservation where (cl.is_active = 1 and re.is_active = 1)\n" +
+                            "and (\n" +
+                            "    cl.id_client like ? or\n" +
+                            "    cl.name like ? or\n" +
+                            "    cl.last_name like ? or\n" +
+                            "    cl.date_of_birth like ? or\n" +
+                            "    cl.nacionality like ? or\n" +
+                            "    cl.telephone like ? or\n" +
+                            "    cl.id_reservation like ?\n" +
+                            "        );");
 
+            try (statement) {
+                statement.setString(1, "%" + indicioRegistro + "%");
+                statement.setString(2, "%" + indicioRegistro + "%");
+                statement.setString(3, "%" + indicioRegistro + "%");
+                statement.setString(4, "%" + indicioRegistro + "%");
+                statement.setString(5, "%" + indicioRegistro + "%");
+                statement.setString(6, "%" + indicioRegistro + "%");
+                statement.setString(7, "%" + indicioRegistro + "%");
+                statement.execute();
+
+                final ResultSet resultSet = statement.getResultSet();
+
+                try (resultSet) {
+                    while (resultSet.next()) {
+                        resultado.add(
+                                new Cliente(
+                                        resultSet.getInt("id_client"),
+                                        resultSet.getString("name"),
+                                        resultSet.getString("last_name"),
+                                        resultSet.getDate("date_of_birth"),
+                                        resultSet.getString("nacionality"),
+                                        resultSet.getString("telephone"),
+                                        resultSet.getInt("id_reservation")
+                                ));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return resultado;
+    }
 }

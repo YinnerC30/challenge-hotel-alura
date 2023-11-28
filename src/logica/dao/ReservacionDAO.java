@@ -86,6 +86,53 @@ public class ReservacionDAO {
         return resultado;
     }
 
+    public List<Reservacion> buscarRegistros(String indicioRegistro) {
+        List<Reservacion> resultado = new ArrayList<>();
+
+        try {
+            final PreparedStatement statement =
+                    con.prepareStatement("select re.id_reservation, re.date_of_entry, re.date_of_exit, re.value_stay_price, re.form_payment\n" +
+                            "from reservations re\n" +
+                            "inner join clients cl on re.id_reservation = cl.id_reservation \n" +
+                            "where (re.is_active = 1 and cl.is_active = 1) and \n" +
+                            "      (\n" +
+                            "          re.id_reservation like ? or \n" +
+                            "          re.date_of_entry like ? or \n" +
+                            "          re.date_of_exit like ? or \n" +
+                            "          re.value_stay_price like ? or \n" +
+                            "          re.form_payment like ? \n" +
+                            "          );");
+
+            try (statement) {
+                statement.setString(1, "%" + indicioRegistro + "%");
+                statement.setString(2, "%" + indicioRegistro + "%");
+                statement.setString(3, "%" + indicioRegistro + "%");
+                statement.setString(4, "%" + indicioRegistro + "%");
+                statement.setString(5, "%" + indicioRegistro + "%");
+                statement.execute();
+
+                final ResultSet resultSet = statement.getResultSet();
+
+                try (resultSet) {
+                    while (resultSet.next()) {
+                        resultado.add(
+                                new Reservacion(
+                                        resultSet.getInt("id_reservation"),
+                                        resultSet.getDate("date_of_entry"),
+                                        resultSet.getDate("date_of_exit"),
+                                        resultSet.getFloat("value_stay_price"),
+                                        resultSet.getString("form_payment")
+                                ));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return resultado;
+    }
+
     public int eliminar(Integer id) {
         try {
             final PreparedStatement statement =
@@ -102,7 +149,7 @@ public class ReservacionDAO {
         }
     }
 
-    public int modificar(Integer id_client, Date date_of_entry, Date date_of_exit, float value_stay_price, String form_payment, float total, Integer id_reservation) {
+    public int modificar(Date date_of_entry, Date date_of_exit, float value_stay_price, String form_payment, float total, Integer id_reservation) {
         try {
             final PreparedStatement statement = con.prepareStatement(
                     "UPDATE reservations SET "

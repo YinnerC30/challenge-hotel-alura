@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -240,6 +241,52 @@ public class Busqueda extends JFrame {
         btnbuscar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                int indexTab = panel.getSelectedIndex();
+                String indiceRegistro = txtBuscar.getText();
+
+                if (indexTab == 0) {
+
+                    if (modelo.getRowCount() == 0) {
+                        ReservacionController reservacionController = new ReservacionController();
+                        List<Reservacion> reservacions = reservacionController.listar();
+
+                        for (Reservacion reserva : reservacions) {
+                            Object[] datos = new Object[]{reserva.getId_reservation(), reserva.getDate_of_entry(), reserva.getDate_of_exit(), reserva.getValue_stay_price(), reserva.getForm_payment()};
+                            modelo.addRow(datos);
+                        }
+                    }
+
+                    if (!indiceRegistro.trim().isEmpty()) {
+                        modelo.setRowCount(0);
+                        List<Reservacion> reservacions = new ReservacionController().buscarRegistros(indiceRegistro);
+                        for (Reservacion reserva : reservacions) {
+                            Object[] datos = new Object[]{reserva.getId_reservation(), reserva.getDate_of_entry(), reserva.getDate_of_exit(), reserva.getValue_stay_price(), reserva.getForm_payment()};
+                            modelo.addRow(datos);
+                        }
+                    }
+                }
+
+                else {
+                    if (modeloHuesped.getRowCount() == 0) {
+                        ClienteController clienteController = new ClienteController();
+                        List<Cliente> listaClientes = clienteController.listar();
+
+                        for (Cliente cliente : listaClientes) {
+                            Object[] datos = new Object[]{cliente.getId_client(), cliente.getName(), cliente.getLast_name(), cliente.getDate_of_birth(), cliente.getNacionality(), cliente.getTelephone(), cliente.getId_reservation()};
+                            modeloHuesped.addRow(datos);
+                        }
+                    }
+
+                    if (!indiceRegistro.trim().isEmpty()) {
+                        modeloHuesped.setRowCount(0);
+                        List<Cliente> listaResultados = new ClienteController().buscarRegistros(indiceRegistro);
+                        for (Cliente cliente : listaResultados) {
+                            Object[] datos = new Object[]{cliente.getId_client(), cliente.getName(), cliente.getLast_name(), cliente.getDate_of_birth(), cliente.getNacionality(), cliente.getTelephone(), cliente.getId_reservation()};
+                            modeloHuesped.addRow(datos);
+                        }
+                    }
+                }
+
 
             }
         });
@@ -278,16 +325,41 @@ public class Busqueda extends JFrame {
 				int idRegistro;
 				if (indexTab == 0) {
 					indiceFilaSeleccionada = tbReservas.getSelectedRow();
-					idRegistro = (int) tbReservas.getValueAt(indiceFilaSeleccionada, 0);
-					new ReservacionController().eliminar(idRegistro);
-					dispose();
 
+                    if (indiceFilaSeleccionada != -1) { // Verifica si hay una fila seleccionada
+                        int cantidadColumnas = tbReservas.getColumnCount();
+                        Object[] datosFila = new Object[cantidadColumnas];
+
+                        for (int columna = 0; columna < cantidadColumnas; columna++) {
+                            datosFila[columna] = tbReservas.getValueAt(indiceFilaSeleccionada, columna);
+                        }
+
+                        Reservacion reservacion = convertToReservation(datosFila);
+                        dispose();
+                        ReservasView reservasView = new ReservasView(reservacion);
+                        reservasView.setVisible(true);
+                    } else {
+                        System.out.println("No hay fila seleccionada.");
+                    }
 
 				} else {
-					indiceFilaSeleccionada = tbHuespedes.getSelectedRow();
-					idRegistro = (int) tbHuespedes.getValueAt(indiceFilaSeleccionada, 0);
-					new ClienteController().eliminar(idRegistro);
-					dispose();
+                    indiceFilaSeleccionada = tbHuespedes.getSelectedRow();
+
+                    if (indiceFilaSeleccionada != -1) { // Verifica si hay una fila seleccionada
+                        int cantidadColumnas = tbHuespedes.getColumnCount();
+                        Object[] datosFila = new Object[cantidadColumnas];
+
+                        for (int columna = 0; columna < cantidadColumnas; columna++) {
+                            datosFila[columna] = tbHuespedes.getValueAt(indiceFilaSeleccionada, columna);
+                        }
+
+                        Cliente cliente = convertToClient(datosFila);
+                        dispose();
+                        RegistroHuesped registroHuesped = new RegistroHuesped(cliente);
+                        registroHuesped.setVisible(true);
+                    } else {
+                        System.out.println("No hay fila seleccionada.");
+                    }
 				}
 
 			}
@@ -348,5 +420,34 @@ public class Busqueda extends JFrame {
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
         this.setLocation(x - xMouse, y - yMouse);
+    }
+
+    public Reservacion convertToReservation(Object[] datos) {
+        Integer id_reservation = (Integer) datos[0];
+        Date date_of_entry = (Date) datos[1];
+        java.sql.Date dateOfEntry = new java.sql.Date(date_of_entry.getTime());
+        Date date_of_exit = (Date) datos[2];
+        java.sql.Date dateOfExit = new java.sql.Date(date_of_exit.getTime());
+        float value_of_stay = (float) datos[3];
+        String form_payment = (String) datos[4];
+
+        return new Reservacion(id_reservation, dateOfEntry, dateOfExit, value_of_stay, form_payment);
+
+
+    }
+
+    public Cliente convertToClient(Object[] datos) {
+        Integer id_client = (Integer) datos[0];
+        String name = (String) datos[1];
+        String last_name = (String) datos[2];
+        Date dateOfBirth = (Date) datos[3];
+        java.sql.Date date_of_birth = new java.sql.Date(dateOfBirth.getTime());
+        String nacionality = (String) datos[4];
+        String telephone = (String) datos[5];
+        Integer id_reservation = (Integer) datos[6];
+
+        return new Cliente(id_client, name, last_name, date_of_birth, nacionality, telephone, id_reservation);
+
+
     }
 }

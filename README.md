@@ -36,15 +36,17 @@ El proyecto por el momento se encuentra finalizado, no obstante se tiene pensado
 # Acceso al proyecto
 
 ## Opción 1
-- Ejecutar archivo `script-db-hotel-alura.sql` para crear la base de datos `hotel_alura` en el servidor MySQL, descargalo haciendo clic aquí
-- Clonar el repositorio desde la siguiente URL : `https://github.com/YinnerC30/challenge-conversor-moneda-java.git`
+- Ejecutar archivo `script-db-hotel-alura.sql` para crear la base de datos `db-hotel-alura` en el servidor MySQL, descargalo haciendo clic aquí
+- Clonar el repositorio desde la siguiente URL : `https://github.com/YinnerC30/challenge-hotel-alura.git`
 - Importar proyecto en algun IDE (recomiendo IntelliJ)
 - Ejecutar aplicación desde la clase y metodo `Main`
 ## Opción 2
 - Ejecutar archivo `script-db-hotel-alura.sql` para crear la base de datos `hotel_alura` en el servidor MySQL, descargalo haciendo clic aquí
-- Descargar el archivo `challenge-hotel-alura.jar` haciendo clic [aquí](https://github.com/0e6142cd-5c82-43d1-afec-2d17fc3b3e2d).
+- Descargar el archivo `challenge-hotel-alura.jar` haciendo clic [aquí](https://github.com).
 - Abrir una terminal en el direcotiro donde se descargo el anterior archivo
 - Ejecutar el comando `java -jar challenge-hotel-alura.jar.jar`
+
+- Credenciales de acceso: usuario: admin | contraseña: 1234admin
 
 Nota: Asegurate que la conexión a la base de datos MySQL de tu computadora (usuario, contraseña, puerto de escucha servidor) concuerden con los parametros de la cadena de conexión del presente proyecto.
 

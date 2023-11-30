@@ -9,7 +9,7 @@
 - [Acceso al proyecto](#Acceso-al-proyecto)
 - [Tecnologías utilizadas](#Tecnologías-utilizadas)
 
-# Descripción del proyecto
+# 📝 Descripción del proyecto
 
 El presente proyecto es un aplicativo desarrollado con el fin de brindar un sistema de gestión de registros de huespedes y reservaciones.
 
@@ -29,11 +29,11 @@ En programa Hotel Alura posee las siguientes funcionalidades:
 - Base de datos para almacenar todos los datos pedidos anteriormente.
 
 
-# Estado del proyecto
+# 🟢 Estado del proyecto
 
 El proyecto por el momento se encuentra finalizado, no obstante se tiene pensado agregarle otro tipo de funcionalidades en el futuro, tales como otro el almacenamiento de mayor información.
 
-# Acceso al proyecto
+# 🚧 Acceso al proyecto
 
 ## Opción 1
 - Ejecutar archivo `script-db-hotel-alura.sql` para crear la base de datos `db-hotel-alura` en el servidor MySQL, descargalo haciendo clic [aquí](https://github.com/YinnerC30/challenge-hotel-alura/blob/main/assets/script-db-hotel-alura.sql)
@@ -50,7 +50,7 @@ El proyecto por el momento se encuentra finalizado, no obstante se tiene pensado
 
 Nota: Asegurate que la conexión a la base de datos MySQL de tu computadora (usuario, contraseña, puerto de escucha servidor) concuerden con los parametros de la cadena de conexión del presente proyecto.
 
-# Tecnologías utilizadas
+# 👨‍💻 Tecnologías utilizadas
 
 - Java 17
 - Libreria Swing
